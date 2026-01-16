@@ -42,6 +42,15 @@ task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
 
+[[workflows.workflow]]
+name = "App"
+mode = "sequential"
+author = 47083224
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
 [userenv]
 
 [userenv.shared]
@@ -55,3 +64,4 @@ VITE_GEMINI_API_KEY = "AIzaSyCrB7oXIVoVEPH-EHhj6HvriEZToBp9ieI"
 VITE_STAKING_ADDRESS = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
 VITE_CHAIN_NAME = "MeeChain"
 VITE_MARKETPLACE_ADDRESS = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+VITE_API_KEY = "AIzaSyCrB7oXIVoVEPH-EHhj6HvriEZToBp9ieI"
