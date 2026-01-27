@@ -3,15 +3,15 @@ import { mainnet } from 'wagmi/chains';
 import { defineChain } from 'viem';
 
 export const meechain = defineChain({
-  id: 1337,
-  name: 'MeeChain',
+  id: 56,
+  name: 'BSC Chain',
   nativeCurrency: {
     decimals: 18,
-    name: 'Mee Token',
-    symbol: 'MEE',
+    name: 'MeeChain Token',
+    symbol: 'MCB',
   },
   rpcUrls: {
-    default: { http: [import.meta.env.VITE_RPC_URL || 'https://meechain.bolt.host:9545'] },
+    default: { http: [import.meta.env.VITE_RPC_URL || 'https://meechain1.bolt.host'] }
   },
   blockExplorers: {
     default: { name: 'Explorer', url: import.meta.env.VITE_EXPLORER_URL || 'https://explorer.meechain.io' },

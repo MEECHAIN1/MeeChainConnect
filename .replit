@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "web", "postgresql-16"]
+modules = ["nodejs-20", "postgresql-16", "python-3.11", "web"]
 run = "npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
@@ -13,9 +13,10 @@ externalPort = 80
 PORT = "5000"
 
 [deployment]
-deploymentTarget = "autoscale"
+deploymentTarget = "static"
 run = ["node", "./dist/index.cjs"]
 build = ["npm", "run", "build"]
+publicDir = "dist/public"
 
 [workflows]
 runButton = "Project"
@@ -54,10 +55,9 @@ args = "npm run dev"
 [userenv]
 
 [userenv.shared]
-VITE_TOKEN_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-VITE_RPC_URL = "https://meechain.bolt.host:9545"
+VITE_RPC_URL = "https://meechain1.bolt.host"
 VITE_EXPLORER_URL = "https://explorer.meechain.io"
-VITE_CHAIN_ID = "1337"
+VITE_CHAIN_ID = "56"
 VITE_WALLETCONNECT_ID = "2e0008e23308df1a8278a35195822b65"
 VITE_NFT_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
 VITE_GEMINI_API_KEY = "AIzaSyCrB7oXIVoVEPH-EHhj6HvriEZToBp9ieI"
@@ -65,3 +65,4 @@ VITE_STAKING_ADDRESS = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
 VITE_CHAIN_NAME = "MeeChain"
 VITE_MARKETPLACE_ADDRESS = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
 VITE_API_KEY = "AIzaSyCrB7oXIVoVEPH-EHhj6HvriEZToBp9ieI"
+VITE_MCB_TOKEN_ADDRESS = "0x82a03a59f55d01c60035dbaef84abc2bcd02560b"
