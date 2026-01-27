@@ -1,6 +1,6 @@
 import { createConfig, http } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
 import { defineChain } from 'viem';
+import { injected } from 'wagmi/connectors';
 
 export const meechain = defineChain({
   id: 56,
@@ -20,6 +20,9 @@ export const meechain = defineChain({
 
 export const config = createConfig({
   chains: [meechain],
+  connectors: [
+    injected(),
+  ],
   transports: {
     [meechain.id]: http(),
   },
