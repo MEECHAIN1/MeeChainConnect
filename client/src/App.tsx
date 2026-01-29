@@ -10,6 +10,7 @@ import Marketplace from "@/pages/Marketplace";
 import Staking from "@/pages/Staking";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/not-found";
+import ChatPage from "@/pages/ChatPage";
 
 function Router() {
   return (
@@ -19,6 +20,9 @@ function Router() {
         <Route path="/marketplace" component={Marketplace} />
         <Route path="/staking" component={Staking} />
         <Route path="/profile" component={Profile} />
+        <Route path="/some-new-feature">
+        <PlaceholderPage title="ระบบ Mining ขั้นสูง" />
+        </Route>
         <Route component={NotFound} />
       </Switch>
     </Layout>

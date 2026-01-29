@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+'vite-plugin-node-polyfills';
 
 export default defineConfig({
   plugins: [
@@ -16,6 +17,12 @@ export default defineConfig({
           await import("@replit/vite-plugin-dev-banner").then((m) =>
             m.devBanner(),
           ),
+    nodePolyfills({
+      globals: {
+        Buffer: true,
+        process: true,
+      },
+    }),
         ]
       : []),
   ],
