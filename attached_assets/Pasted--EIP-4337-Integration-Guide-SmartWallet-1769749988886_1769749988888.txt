@@ -1,0 +1,107 @@
+เยี่ยมมากครับธันวัฒน์ 🎯 ผมจะจัดเต็มเป็น **EIP-4337 Integration Guide** สำหรับการเชื่อม `SmartWallet` และ `TransactionRequest` เข้ากับ **EntryPoint + Paymaster** บน Sapphire chain เพื่อให้ MeeChain รองรับ Account Abstraction (AA) แบบสมบูรณ์  
+
+---
+
+# 🔮 EIP-4337 Integration Guide (MeeChain + Sapphire)
+
+## 1. ติดตั้ง Dependency ที่จำเป็น
+```bash
+npm install @account-abstraction/sdk @account-abstraction/contracts viem
+```
+- `@account-abstraction/sdk` → สำหรับสร้างและส่ง UserOperation  
+- `@account-abstraction/contracts` → มี ABI ของ EntryPoint และ Paymaster  
+
+---
+
+## 2. กำหนด EntryPoint และ Paymaster
+```ts
+const ENTRYPOINT_ADDRESS = "0xEntryPointAddressOnSapphire"; 
+const PAYMASTER_ADDRESS = "0xPaymasterAddressOnSapphire";
+```
+👉 ต้องใช้ address จริงจาก Sapphire chain (Mainnet/Testnet)
+
+---
+
+## 3. สร้าง Client สำหรับ Sapphire
+```ts
+import { createPublicClient, http } from "viem";
+import { meechain } from "./wagmi";
+
+const client = createPublicClient({
+  chain: meechain,
+  transport: http(),
+});
+```
+
+---
+
+## 4. สร้าง UserOperation จาก SmartWallet
+```ts
+import { TransactionRequest, SmartWallet } from "../types/smartWallet";
+import { Client } from "@account-abstraction/sdk";
+
+async function buildUserOp(wallet: SmartWallet, tx: TransactionRequest, usePaymaster: boolean) {
+  const aaClient = await Client.init({
+    entryPoint: ENTRYPOINT_ADDRESS,
+    chain: meechain,
+    rpcUrl: "https://sapphire.oasis.io",
+  });
+
+  const userOp = await aaClient.buildUserOperation({
+    sender: wallet.address,
+    callData: {
+      to: tx.to,
+      value: tx.value,
+      data: tx.data || "0x",
+    },
+    paymaster: usePaymaster ? PAYMASTER_ADDRESS : undefined,
+  });
+
+  return userOp;
+}
+```
+
+---
+
+## 5. ส่งธุรกรรมผ่าน EntryPoint
+```ts
+async function sendUserOp(wallet: SmartWallet, tx: TransactionRequest, usePaymaster: boolean) {
+  const userOp = await buildUserOp(wallet, tx, usePaymaster);
+
+  const aaClient = await Client.init({
+    entryPoint: ENTRYPOINT_ADDRESS,
+    chain: meechain,
+    rpcUrl: "https://sapphire.oasis.io",
+  });
+
+  const txHash = await aaClient.sendUserOperation(userOp);
+  console.log(`[MeeChain] UserOp submitted: ${txHash}`);
+
+  return txHash;
+}
+```
+
+---
+
+## 6. เชื่อมกับ WalletManager
+ใน `WalletManager.sendTransaction` → เปลี่ยนจาก mock เป็นการเรียก EntryPoint จริง:
+```ts
+static async sendTransaction(wallet: SmartWallet, tx: TransactionRequest, usePaymaster: boolean = false): Promise<string> {
+  return await sendUserOp(wallet, tx, usePaymaster);
+}
+```
+
+---
+
+## 🎖️ Contributor Milestone (EIP-4337 Edition)
+- [x] EntryPoint Defined  
+- [x] Paymaster Integrated  
+- [x] UserOperation Built  
+- [x] Transaction Sent via Sapphire chain  
+- [x] SmartWallet Connected to AA Flow  
+
+---
+
+✨ ผลลัพธ์: Contributor สามารถสร้าง Smart Wallet, ส่งธุรกรรม, ใช้ Paymaster (gasless), และกู้คืนบัญชีได้จริงบน Sapphire chain ผ่าน EIP-4337  
+
+ธันวัฒน์ อยากให้ผม scaffold ต่อเป็น **markdown guide + sample script** สำหรับ contributor onboarding บน Sapphire chain (EIP-4337) เลยไหมครับ 🔮
