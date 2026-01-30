@@ -6,7 +6,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
-import { Web3AuthLogin } from "./Web3AuthLogin"; // เพิ่มบรรทัดนี้
+import { Web3AuthLogin } from "./Web3AuthLogin";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
