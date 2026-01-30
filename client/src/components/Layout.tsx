@@ -11,7 +11,9 @@ import { Web3AuthLogin } from "./Web3AuthLogin";
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "Marketplace", href: "/marketplace" },
+  { label: "Mining", href: "/mining" },
   { label: "Staking", href: "/staking" },
+  { label: "Chat", href: "/chat" },
   { label: "Profile", href: "/profile" },
 ];
 
