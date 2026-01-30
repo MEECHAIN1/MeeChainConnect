@@ -1,0 +1,94 @@
+เยี่ยมมากครับธันวัฒน์ 🎉 คุณได้วางโครงสร้าง **Smart Wallet + Sapphire Chain** ไว้แล้ว ผมจะจัดเต็มเป็น **Web3 Onboarding Flow** สำหรับ contributor ที่เข้ามาใช้งาน MeeChain บน Sapphire chain พร้อม Smart Wallet abstraction  
+
+---
+
+# 🔮 Web3 Smart Wallet Onboarding Flow (MeeChain + Sapphire)
+
+## 1. เชื่อมต่อ Wallet
+- ใช้ **RainbowKit** + **Wagmi** เพื่อเชื่อมต่อกระเป๋า
+- รองรับทั้ง **Ethereum Mainnet** และ **Oasis Sapphire**
+- Contributor จะเห็น UI ที่เลือกกระเป๋าได้ทันที เช่น MetaMask, WalletConnect, หรือ Smart Wallet ที่คุณนิยาม
+
+🎖️ **Badge Unlock:** “🔗 Wallet Connected”
+
+---
+
+## 2. สร้าง Smart Wallet
+- เมื่อผู้ใช้เชื่อมต่อ → ระบบสร้าง `SmartWallet` object:
+  ```ts
+  const wallet: SmartWallet = {
+    id: "wallet-001",
+    address: "0x123...",
+    name: "Main Wallet",
+    type: "main",
+    ownerId: "user-001",
+    balance: { native: "0", tokens: {} },
+    isDeployed: false,
+    createdAt: Date.now(),
+  };
+  ```
+- Contributor จะได้ **main / savings / dev wallet** ตาม role
+
+🎖️ **Badge Unlock:** “🛠️ Smart Wallet Created”
+
+---
+
+## 3. ส่งธุรกรรม (Transaction Flow)
+- ใช้ `TransactionRequest`:
+  ```ts
+  const tx: TransactionRequest = {
+    to: "0x456...",
+    value: "1000000000000000000", // 1 ROSE
+  };
+  ```
+- Sapphire รองรับ **gasless transaction** → ผู้ใช้ไม่ต้องถือ ROSE สำหรับค่าแก๊ส
+
+🎖️ **Badge Unlock:** “🚀 Transaction Sent”
+
+---
+
+## 4. Gasless Transaction & Sponsor
+- ตรวจสอบสิทธิ์ gasless:
+  ```ts
+  const quote: GaslessQuote = {
+    eligible: true,
+    sponsorName: "MeeChain Gasless",
+    feeToken: "ROSE",
+  };
+  ```
+- ถ้าไม่ผ่าน → แจ้ง reason เช่น `"Insufficient balance"`
+
+🎖️ **Badge Unlock:** “⚡ Gasless Enabled”
+
+---
+
+## 5. Recovery Flow
+- รองรับการกู้คืนกระเป๋า:
+  - **Social Recovery** → ใช้ guardian address
+  - **Biometric Recovery** → ผ่านระบบ external
+  - **Guardian Recovery** → multi-sig guardian
+
+```ts
+const recovery: RecoveryConfig = {
+  method: "social",
+  guardians: ["0x789...", "0xabc..."],
+  lastUpdated: Date.now(),
+};
+```
+
+🎖️ **Badge Unlock:** “🛡️ Recovery Configured”
+
+---
+
+## 🎉 Contributor Ritual Checklist
+- [x] Wallet Connected  
+- [x] Smart Wallet Created  
+- [x] Transaction Sent  
+- [x] Gasless Enabled  
+- [x] Recovery Configured  
+
+---
+
+✨ Flow นี้จะทำให้ contributor รู้สึกว่า **MeeChain บน Sapphire chain** ไม่ใช่แค่การเชื่อมต่อ wallet แต่เป็นการเข้าสู่ระบบที่มีทั้ง **ความปลอดภัย, ความสะดวก, และ ritualized milestone**  
+
+ธันวัฒน์ อยากให้ผม scaffold ต่อเป็น **UI overlay guide** (เช่น HUD ที่โชว์ badge unlock, sound effect, theme unlock) สำหรับ contributor onboarding บน Sapphire chain เลยไหมครับ?
