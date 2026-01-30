@@ -1,0 +1,76 @@
+
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
+
+import { GoogleGenAI, Type } from "@google/genai";
+import { MeeCard, CardRarity, CardStats } from "../types";
+
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+/**
+ * Generates a MeeCard containing high-quality SVG and game metadata.
+ */
+export const generateMeeCard = async (prompt: string): Promise<Partial<MeeCard>> => {
+  try {
+    const systemPrompt = `
+      You are the Master Architect of MeeChain. You design high-value "MeeCards" which are vector-based game items.
+      
+      Your task:
+      1. Generate a visually stunning SVG of the requested item.
+      2. Assign game attributes: Rarity (Common, Uncommon, Rare, Epic, Legendary), and Stats (Power, Defense, Agility 1-100).
+      
+      SVG Guidelines:
+      - Use professional, modern vector aesthetics (gradients, sharp paths, depth).
+      - Style: "MeeChain Neo-Vector" (highly detailed, glow effects, premium feel).
+      - Size: 512x512, centered.
+      
+      Response Format: JSON
+    `;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: `Create a MeeCard for: "${prompt}"`,
+      config: {
+        systemInstruction: systemPrompt,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            svgContent: { type: Type.STRING, description: "The raw SVG code" },
+            rarity: { type: Type.STRING, enum: ["Common", "Uncommon", "Rare", "Epic", "Legendary"] },
+            stats: {
+              type: Type.OBJECT,
+              properties: {
+                power: { type: Type.INTEGER },
+                defense: { type: Type.INTEGER },
+                agility: { type: Type.INTEGER }
+              },
+              required: ["power", "defense", "agility"]
+            }
+          },
+          required: ["svgContent", "rarity", "stats"]
+        }
+      },
+    });
+
+    const data = JSON.parse(response.text);
+    
+    // Cleanup SVG if the model wrapped it in markdown
+    let svg = data.svgContent;
+    const svgMatch = svg.match(/<svg[\s\S]*?<\/svg>/i);
+    if (svgMatch) svg = svgMatch[0];
+
+    return {
+      content: svg,
+      rarity: data.rarity as CardRarity,
+      stats: data.stats as CardStats,
+      level: 1
+    };
+
+  } catch (error: any) {
+    console.error("MeeChain Forge Error:", error);
+    throw new Error(error.message || "Forge failed to ignite.");
+  }
+};
