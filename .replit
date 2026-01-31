@@ -62,4 +62,8 @@ VITE_GEMINI_API_KEY='AIzaSyCrB7oXIVoVEPH-EHhj6HvriEZToBp9ieI'
 VITE_API_KEY= 'AsVxQhK8x1O7jf5mj2hFiH2wffGOkaf6nSHPw8Gu0DlgifK-X21-2Owj8DAof89L'
 VITE_WALLETCONNECT_ID= 'b0d81328f8ab0541fdede7db9ff25cb1'
 VITE_DNS_API_KEY= 'jF6R5RcJLrFXayBeg6Uj52UdsQnj3L'
+VITE_WEB3AUTH_JWKS_ENDPOINT = "https://api-auth.web3auth.io/.well-known/jwks.json"
+VITE_WEB3AUTH_CLIENT_ID = "BDoEZ3QXE314y8jyZl9QYB9gwZX6b6LkNvU3li8GSYf17B-dlMGn3WBlrRj_dqIAI_0-GZBs7YJmMlUnwPs0XfI"
+RITUAL_CHAIN_ID = "0x344e"
+RPC_URL = "https://ritual-chain--praphaprawanta.replit.app:3002"
 
