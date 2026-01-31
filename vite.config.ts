@@ -2,25 +2,28 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
+import nodePolyfills from "vite-plugin-node-polyfills";
 
 export default async function setup() {
   const plugins = [
     react(),
     runtimeErrorOverlay(),
-    nodePolyfills({
-      globals: {
-        Buffer: true,
-        process: true,
-      },
-    }),
   ];
 
   if (process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined) {
     const { cartographer } = await import("@replit/vite-plugin-cartographer");
     const { devBanner } = await import("@replit/vite-plugin-dev-banner");
 
-    plugins.push(cartographer(), devBanner());
+    plugins.push(
+      cartographer(),
+      devBanner(),
+      nodePolyfills({
+        globals: {
+          Buffer: true,
+          process: true,
+        },
+      })
+    );
   }
 
   return defineConfig({
@@ -38,9 +41,6 @@ export default async function setup() {
       emptyOutDir: true,
     },
     server: {
-      watch: {
-        ignored: ["**/node_modules/**", "**/.cache/**"],
-      },
       fs: {
         strict: true,
         deny: ["**/.*"],
