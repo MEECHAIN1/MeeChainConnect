@@ -12,34 +12,44 @@ import {
   AlertTriangle 
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import XPBar from "@/components/XPBar";
+import LevelUpModal from "@/components/LevelUpModal";
 
 const MiningPage: React.FC = () => {
   const { address, isConnected } = useAccount();
   const { toast } = useToast();
-  
-  // สถานะการขุดในเครื่อง (Local State)
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [previousLevel, setPreviousLevel] = useState<number | null>(null);
   const [isMining, setIsMining] = useState(false);
   const [localEnergy, setLocalEnergy] = useState(100);
   const [localTokens, setLocalTokens] = useState(0);
   const [sessionEarned, setSessionEarned] = useState(0);
-  
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 1. ดึงข้อมูล Energy และ Tokens จาก DB
   const { data: profile, isLoading } = useQuery<any>({
     queryKey: ["/api/profiles", address],
     enabled: !!isConnected,
   });
 
-  // อัปเดตค่า Local เมื่อโหลดข้อมูลจาก DB สำเร็จ
   useEffect(() => {
     if (profile) {
-      setLocalEnergy(profile.energy ?? 100);
-      setLocalTokens(parseFloat(profile.tokens ?? "0"));
+      if (!isMining) {
+        setLocalEnergy(profile.energy ?? 100);
+        setLocalTokens(parseFloat(profile.tokens ?? "0"));
+      }
     }
-  }, [profile]);
+  }, [profile, isMining]);
 
-  // 2. Mutation สำหรับส่งข้อมูลไปบันทึก (Sync) ที่ Server
+  useEffect(() => {
+    if (profile?.level) {
+      if (previousLevel !== null && profile.level > previousLevel) {
+        setShowLevelUp(true);
+        // playSound('/levelup.mp3'); // ถ้ามีเสียงใส่ตรงนี้
+      }
+      setPreviousLevel(profile.level);
+    }
+  }, [profile?.level]);
+
   const syncMutation = useMutation({
     mutationFn: async (vars: { energy: number; tokens: string }) => {
       const res = await apiRequest("POST", "/api/mining/sync", {
@@ -66,7 +76,6 @@ const MiningPage: React.FC = () => {
     }
   });
 
-  // 3. Logic การขุด (Mining Loop)
   const startMining = () => {
     if (localEnergy <= 0) {
       toast({ variant: "destructive", title: "Energy Depleted", description: "พลังงานหมดแล้ว โปรดรอการฟื้นฟู" });
@@ -95,7 +104,6 @@ const MiningPage: React.FC = () => {
       timerRef.current = null;
     }
     setIsMining(false);
-    // เมื่อหยุดขุด ให้ส่งข้อมูลไป Sync ทันที
     syncMutation.mutate({
       energy: localEnergy,
       tokens: localTokens.toString()
@@ -140,6 +148,10 @@ const MiningPage: React.FC = () => {
               className={`h-full transition-all duration-500 ${localEnergy < 20 ? 'bg-red-500' : 'bg-yellow-400'}`}
               style={{ width: `${localEnergy}%` }}
             />
+          </div>
+            {/* ✅ ส่วน XP Bar (ต้องอยู่นอก div ของหลอด Energy) */}
+            <div className="mt-6 pt-6 border-t border-gray-800">
+               <XPBar xp={profile?.xp || 0} level={profile?.level || 1} />
           </div>
         </div>
 

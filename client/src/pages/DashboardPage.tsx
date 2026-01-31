@@ -21,6 +21,7 @@ import {
   ResponsiveContainer 
 } from "recharts";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import XPBar from "@/components/XPBar";
 
 // จำลองข้อมูลกราฟการขุด (ในอนาคตดึงจาก API)
 const miningHistory = [
@@ -93,17 +94,22 @@ const DashboardPage: React.FC = () => {
             </div>
 
             {/* Smart Wallet Status */}
-            <div className="bg-gray-800/40 border border-gray-700 p-6 rounded-3xl backdrop-blur-md">
-              <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">Identity Status</p>
-              <div className="flex items-center gap-3 mt-3">
-                <div className="bg-green-500/10 p-2 rounded-lg">
-                  <ShieldCheck className="text-green-400" size={20} />
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-sm">Level {profile?.level || 1}</h3>
-                  <p className="text-[10px] text-gray-500 font-mono">Verified Persona</p>
+            <div className="bg-gray-800/40 border border-gray-700 p-6 rounded-3xl backdrop-blur-md flex flex-col justify-between">
+              <div>
+                <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">Identity Status</p>
+                <div className="flex items-center gap-3 mt-3 mb-4">
+                  <div className="bg-green-500/10 p-2 rounded-lg">
+                    <ShieldCheck className="text-green-400" size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-bold text-sm">Verified Persona</h3>
+                    <p className="text-[10px] text-gray-500 font-mono">ID: {profile?.username || 'GUEST'}</p>
+                  </div>
                 </div>
               </div>
+
+              {/* ✅ ใส่ XP Bar ตรงนี้ครับ */}
+              <XPBar xp={profile?.xp || 0} level={profile?.level || 1} />
             </div>
 
             {/* Node Hashrate */}
