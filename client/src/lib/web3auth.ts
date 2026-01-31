@@ -23,14 +23,14 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
 // สร้าง Instance หลัก
 export const web3auth = new Web3Auth({
   clientId,
-  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET, // ใช้เครือข่าย Sapphire ของ Web3Auth
+  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
   privateKeyProvider,
   uiConfig: {
     appName: "MeeChain",
     mode: "dark",
     theme: {
-      primary: "#3b82f6", // สีฟ้า MeeChain
+      primary: "#3b82f6",
     },
-    loginMethodsOrder: ["google", "facebook", "twitter", "discord"],
+    loginMethodsOrder: ["google", "facebook", "apple", "discord"],
   },
 });

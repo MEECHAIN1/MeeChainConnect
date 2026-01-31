@@ -14,6 +14,7 @@ const LoginWithMeeBot: React.FC = () => {
   useEffect(() => {
     const init = async () => {
       try {
+        console.log("Web3Auth Status:", web3auth.status);
         if (web3auth.status === "not_ready") {
           await web3auth.initModal();
         }
