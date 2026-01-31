@@ -14,6 +14,8 @@ export const profiles = pgTable("profiles", {
   bio: text("bio"),
   avatarUrl: text("avatar_url"),
   bannerUrl: text("banner_url"),
+  energy: integer("energy").default(100),
+  tokens: text("tokens").default("0"),
 });
 
 export const insertUserSchema = createInsertSchema(users);

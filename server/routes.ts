@@ -37,5 +37,24 @@ export async function registerRoutes(
     }
   });
 
+  app.post(api.mining.sync.path, async (req, res) => {
+    try {
+      const input = api.mining.sync.input.parse(req.body);
+      const profile = await storage.syncMining(input.walletAddress, {
+        energy: input.energy,
+        tokens: input.tokens,
+      });
+      res.json(profile);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      throw err;
+    }
+  });
+
   return httpServer;
 }

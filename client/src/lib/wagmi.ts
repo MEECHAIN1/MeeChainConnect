@@ -1,26 +1,26 @@
-import { createConfig, http } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
-import { defineChain } from 'viem';
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { defineChain } from "viem";
+import { mainnet } from "wagmi/chains";
 
+// กำหนดค่า Oasis Sapphire Chain
 export const meechain = defineChain({
-  id: 1337,
-  name: 'MeeChain',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Mee Token',
-    symbol: 'MEE',
-  },
+  id: 23294,
+  name: 'Oasis Sapphire',
+  network: 'sapphire',
+  nativeCurrency: { name: 'ROSE', symbol: 'ROSE', decimals: 18 },
   rpcUrls: {
-    default: { http: [import.meta.env.VITE_RPC_URL || 'https://meechain.bolt.host:9545'] },
+    default: { http: ['https://sapphire.oasis.io'] },
+    public: { http: ['https://sapphire.oasis.io'] },
   },
   blockExplorers: {
-    default: { name: 'Explorer', url: import.meta.env.VITE_EXPLORER_URL || 'https://explorer.meechain.io' },
+    default: { name: 'Oasis Explorer', url: 'https://explorer.oasis.io/mainnet/sapphire' },
   },
 });
 
-export const config = createConfig({
-  chains: [meechain],
-  transports: {
-    [meechain.id]: http(),
-  },
+// ตั้งค่า RainbowKit Config
+export const config = getDefaultConfig({
+  appName: "MeeChain App",
+  projectId: "b0d81328f8ab0541fdede7db9ff25cb1", // Project ID เดิมของคุณ
+  chains: [meechain, mainnet],
+  ssr: false, // ปิด SSR เพราะเราทำ SPA (Single Page App) บน Replit
 });

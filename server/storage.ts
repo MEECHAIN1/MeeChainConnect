@@ -10,6 +10,7 @@ export interface IStorage {
   getProfile(walletAddress: string): Promise<Profile | undefined>;
   createProfile(profile: InsertProfile): Promise<Profile>;
   updateProfile(walletAddress: string, profile: Partial<InsertProfile>): Promise<Profile>;
+  syncMining(walletAddress: string, data: { energy: number; tokens: string }): Promise<Profile>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -49,6 +50,17 @@ export class DatabaseStorage implements IStorage {
     
     const [profile] = await db.update(profiles)
       .set(update)
+      .where(eq(profiles.walletAddress, walletAddress))
+      .returning();
+    return profile;
+  }
+
+  async syncMining(walletAddress: string, data: { energy: number; tokens: string }): Promise<Profile> {
+    const [profile] = await db.update(profiles)
+      .set({
+        energy: data.energy,
+        tokens: data.tokens,
+      })
       .where(eq(profiles.walletAddress, walletAddress))
       .returning();
     return profile;

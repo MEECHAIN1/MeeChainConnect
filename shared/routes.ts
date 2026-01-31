@@ -34,6 +34,21 @@ export const api = {
       },
     },
   },
+  mining: {
+    sync: {
+      method: "POST" as const,
+      path: "/api/mining/sync",
+      input: z.object({
+        walletAddress: z.string(),
+        energy: z.number(),
+        tokens: z.string(),
+      }),
+      responses: {
+        200: z.custom<typeof profiles.$inferSelect>(),
+        400: errorSchemas.validation,
+      },
+    },
+  },
 };
 
 export function buildUrl(path: string, params?: Record<string, string | number>): string {
