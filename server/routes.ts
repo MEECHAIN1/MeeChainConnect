@@ -37,22 +37,31 @@ export async function registerRoutes(
     }
   });
 
-  app.post(api.mining.sync.path, async (req, res) => {
+  app.post("/api/wallets", async (req, res) => {
     try {
-      const input = api.mining.sync.input.parse(req.body);
-      const profile = await storage.syncMining(input.walletAddress, {
-        energy: input.energy,
-        tokens: input.tokens,
+      const walletData = req.body;
+      const newWallet = await storage.createWallet({
+        id: walletData.id,
+        address: walletData.address,
+        name: walletData.name,
+        type: walletData.type,
+        ownerAddress: walletData.ownerId,
+        isDeployed: walletData.isDeployed,
+        balanceNative: String(walletData.balance?.native || "0")
       });
-      res.json(profile);
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        return res.status(400).json({
-          message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
-        });
-      }
-      throw err;
+      res.json(newWallet);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to sync wallet" });
+    }
+  });
+
+  app.post("/api/mining/sync", async (req, res) => {
+    try {
+      const { walletAddress, energy, tokens } = req.body;
+      const updated = await storage.updateMiningStats(walletAddress, energy, tokens);
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to sync mining stats" });
     }
   });
 
