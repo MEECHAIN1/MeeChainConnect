@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
+  { label: "Dashboard", href: "/dashboard" },
   { label: "Marketplace", href: "/marketplace" },
   { label: "Mining", href: "/mining" },
   { label: "Staking", href: "/staking" },

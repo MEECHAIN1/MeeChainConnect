@@ -13,6 +13,7 @@ import Marketplace from "@/pages/Marketplace";
 import Staking from "@/pages/Staking";
 import Profile from "@/pages/Profile";
 import MiningPage from "@/pages/MiningPage";
+import DashboardPage from "@/pages/DashboardPage";
 import OnboardingHUD from "@/components/OnboardingHUD";
 import NotFound from "@/pages/not-found";
 import { Layout } from "@/components/Layout";
@@ -30,6 +31,7 @@ function Router() {
               <Route path="/staking" component={Staking} />
               <Route path="/profile" component={Profile} />
               <Route path="/mining" component={MiningPage} />
+              <Route path="/dashboard" component={DashboardPage} />
               <Route component={NotFound} />
             </Switch>
             <OnboardingHUD />
