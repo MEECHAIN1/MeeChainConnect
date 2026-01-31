@@ -1,25 +1,26 @@
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { defineChain } from "viem";
-import { mainnet } from "wagmi/chains";
+import { createConfig, http } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
+import { defineChain } from 'viem';
 
-// ✅ ต้องมี export const meechain ตรงนี้
 export const meechain = defineChain({
-  id: 23294,
-  name: 'Oasis Sapphire',
-  network: 'sapphire',
-  nativeCurrency: { name: 'ROSE', symbol: 'ROSE', decimals: 18 },
+  id: 1337,
+  name: 'MeeChain',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Mee Token',
+    symbol: 'MEE',
+  },
   rpcUrls: {
-    default: { http: ['https://sapphire.oasis.io'] },
-    public: { http: ['https://sapphire.oasis.io'] },
+    default: { http: [import.meta.env.VITE_RPC_URL || 'https://meechain.bolt.host:9545'] },
   },
   blockExplorers: {
-    default: { name: 'Oasis Explorer', url: 'https://explorer.oasis.io/mainnet/sapphire' },
+    default: { name: 'Explorer', url: import.meta.env.VITE_EXPLORER_URL || 'https://explorer.meechain.io' },
   },
 });
 
-export const config = getDefaultConfig({
-  appName: "MeeChain",
-  projectId: "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",
-  chains: [meechain, mainnet],
-  ssr: false,
+export const config = createConfig({
+  chains: [meechain],
+  transports: {
+    [meechain.id]: http(),
+  },
 });

@@ -2,6 +2,8 @@ import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { rm, readFile } from "fs/promises";
 
+// server deps to bundle to reduce openat(2) syscalls
+// which helps cold start times
 const allowlist = [
   "@google/generative-ai",
   "axios",
@@ -31,45 +33,35 @@ const allowlist = [
 ];
 
 async function buildAll() {
-  try {
-    console.log("🧹 Cleaning dist folder...");
-    await rm("dist", { recursive: true, force: true });
+  await rm("dist", { recursive: true, force: true });
 
-    console.log("📦 Building client (Vite)...");
-    // การรัน Vite build ตรงนี้กิน RAM เยอะที่สุด
-    await viteBuild(); 
-    
-    // ช่วยคืน Memory เล็กน้อยหลังจบงานหนัก
-    if (global.gc) global.gc();
+  console.log("building client...");
+  await viteBuild();
 
-    console.log("🖥️ Building server (esbuild)...");
-    const pkg = JSON.parse(await readFile("package.json", "utf-8"));
-    const allDeps = [
-      ...Object.keys(pkg.dependencies || {}),
-      ...Object.keys(pkg.devDependencies || {}),
-    ];
-    const externals = allDeps.filter((dep) => !allowlist.includes(dep));
+  console.log("building server...");
+  const pkg = JSON.parse(await readFile("package.json", "utf-8"));
+  const allDeps = [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.devDependencies || {}),
+  ];
+  const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
-    await esbuild({
-      entryPoints: ["server/index.ts"],
-      platform: "node",
-      bundle: true,
-      format: "cjs",
-      outfile: "dist/index.cjs",
-      define: {
-        "process.env.NODE_ENV": '"production"',
-      },
-      minify: true,
-      external: externals,
-      logLevel: "info",
-    });
-
-    console.log("✅ MeeBotV2 Built Successfully!");
-  } catch (err) {
-    console.error("❌ Build process failed:");
-    console.error(err);
-    process.exit(1);
-  }
+  await esbuild({
+    entryPoints: ["server/index.ts"],
+    platform: "node",
+    bundle: true,
+    format: "cjs",
+    outfile: "dist/index.cjs",
+    define: {
+      "process.env.NODE_ENV": '"production"',
+    },
+    minify: true,
+    external: externals,
+    logLevel: "info",
+  });
 }
 
-buildAll();
+buildAll().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
