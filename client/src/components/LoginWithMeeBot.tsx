@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { web3auth } from "@/lib/web3auth";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, LogIn, Wallet } from "lucide-react";
-import { useAccount, useConnect } from "wagmi";
+import { Loader2 } from "lucide-react";
+import { useLocation } from "wouter";
 
 const LoginWithMeeBot: React.FC = () => {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(false);
-  const [provider, setProvider] = useState<any>(null);
   const [userInfo, setUserInfo] = useState<any>(null);
 
-  // Initialize Web3Auth ตอนโหลดหน้าเว็บ
+  // Initialize Web3Auth
   useEffect(() => {
     const init = async () => {
       try {
-        await web3auth.initModal();
+        if (web3auth.status === "not_ready") {
+          await web3auth.initModal();
+        }
+        
         if (web3auth.connected) {
-          setProvider(web3auth.provider);
           const user = await web3auth.getUserInfo();
           setUserInfo(user);
         }
@@ -34,16 +36,21 @@ const LoginWithMeeBot: React.FC = () => {
     }
     try {
       setLoading(true);
-      const web3authProvider = await web3auth.connect();
-      setProvider(web3authProvider);
+      
+      if (!web3auth.connected) {
+        await web3auth.connect();
+      }
 
       const user = await web3auth.getUserInfo();
       setUserInfo(user);
 
       toast({
         title: "Welcome to MeeChain!",
-        description: `สวัสดีคุณ ${user.name || "User"} กระเป๋าของคุณพร้อมแล้ว!`,
+        description: `สวัสดีคุณ ${user.name || "User"} การเข้าสู่ระบบสำเร็จ!`,
       });
+      
+      // Redirect to dashboard after successful login
+      setLocation("/dashboard");
     } catch (error) {
       console.error(error);
       toast({ title: "Login Failed", description: "การเข้าสู่ระบบถูกยกเลิก", variant: "destructive" });
@@ -53,10 +60,14 @@ const LoginWithMeeBot: React.FC = () => {
   };
 
   const logout = async () => {
-    await web3auth.logout();
-    setProvider(null);
-    setUserInfo(null);
-    toast({ title: "Logged Out", description: "ออกจากระบบเรียบร้อยแล้ว" });
+    try {
+      await web3auth.logout();
+      setUserInfo(null);
+      toast({ title: "Logged Out", description: "ออกจากระบบเรียบร้อยแล้ว" });
+      setLocation("/");
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
   };
 
   if (userInfo) {
@@ -85,6 +96,7 @@ const LoginWithMeeBot: React.FC = () => {
     <button
       onClick={login}
       disabled={loading}
+      data-testid="button-login-meebot"
       className="group relative px-8 py-4 bg-white text-black rounded-2xl font-black text-lg transition-all transform hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-20 transition-opacity" />
