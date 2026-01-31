@@ -13,6 +13,7 @@ import Marketplace from "@/pages/Marketplace";
 import Staking from "@/pages/Staking";
 import Profile from "@/pages/Profile";
 import MiningPage from "@/pages/MiningPage";
+import OnboardingHUD from "@/components/OnboardingHUD";
 import NotFound from "@/pages/not-found";
 import { Layout } from "@/components/Layout";
 
@@ -31,6 +32,7 @@ function Router() {
               <Route path="/mining" component={MiningPage} />
               <Route component={NotFound} />
             </Switch>
+            <OnboardingHUD />
           </Layout>
           <Toaster />
         </RainbowKitProvider>
