@@ -20,7 +20,7 @@ export const meechain = defineChain({
 // ตั้งค่า RainbowKit Config
 export const config = getDefaultConfig({
   appName: "MeeChain App",
-  projectId: "b0d81328f8ab0541fdede7db9ff25cb1", // Project ID เดิมของคุณ
+  projectId: "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96", // Project ID เดิมของคุณ
   chains: [meechain, mainnet],
   ssr: false, // ปิด SSR เพราะเราทำ SPA (Single Page App) บน Replit
 });

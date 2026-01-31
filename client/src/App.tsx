@@ -16,27 +16,31 @@ import MiningPage from "@/pages/MiningPage";
 import DashboardPage from "@/pages/DashboardPage";
 import OnboardingHUD from "@/components/OnboardingHUD";
 import NotFound from "@/pages/not-found";
-import { Layout } from "@/components/Layout";
+import { Layout } from "@/components/Layout"; // หรือ Sidebar ของคุณ
 
 function Router() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={darkTheme()}>
+          
           <Layout>
-            <Switch>
-               {/* ใส่ Route ของคุณตรงนี้ */}
-              <Route path="/" component={Home} />
-              <Route path="/marketplace" component={Marketplace} />
-              <Route path="/staking" component={Staking} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/mining" component={MiningPage} />
-              <Route path="/dashboard" component={DashboardPage} />
-              <Route component={NotFound} />
-            </Switch>
-            <OnboardingHUD />
+            <div className="min-h-screen bg-[#0a0a0c] text-white">
+              <Switch>
+                 {/* ใส่ Route ของคุณตรงนี้ */}
+                <Route path="/" component={Home} />
+                <Route path="/marketplace" component={Marketplace} />
+                <Route path="/staking" component={Staking} />
+                <Route path="/profile" component={Profile} />
+                <Route path="/mining" component={MiningPage} />
+                <Route path="/dashboard" component={DashboardPage} />
+                <Route component={NotFound} />
+              </Switch>
+              <OnboardingHUD />
+              <Toaster />
+            </div>
           </Layout>
-          <Toaster />
+
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
