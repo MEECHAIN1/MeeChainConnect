@@ -4,10 +4,8 @@ import { queryClient } from "./lib/queryClient";
 import { WagmiProvider } from "wagmi";
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { config } from "./lib/wagmi";
-import "@rainbow-me/rainbowkit/styles.css"; // อย่าลืมบรรทัดนี้ ไม่งั้นปุ่มจะเพี้ยน!
+import "@rainbow-me/rainbowkit/styles.css";
 import { Toaster } from "@/components/ui/toaster";
-
-// Import หน้าต่างๆ
 import Home from "@/pages/Home";
 import Marketplace from "@/pages/Marketplace";
 import Staking from "@/pages/Staking";
