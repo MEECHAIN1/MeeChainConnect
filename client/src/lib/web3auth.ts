@@ -27,7 +27,7 @@ export const web3auth = new Web3Auth({
   clientId,
   // ⚠️ จุดสำคัญ: ต้องตรงกับ Environment ใน Dashboard ของคุณ
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET, 
-  privateKeyProvider,
+  privateKeyProvider: privateKeyProvider as any,
   uiConfig: {
     appName: "MeeChain Portal",
     mode: "dark",
