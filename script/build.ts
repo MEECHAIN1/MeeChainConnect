@@ -1,6 +1,7 @@
-import { build as esbuild } from "esbuild";
+//import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { rm, readFile } from "fs/promises";
+import { build } from "esbuild";
 
 const allowlist = [
   "@google/generative-ai",
@@ -44,12 +45,12 @@ async function buildAll() {
   ];
   const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
-  await esbuild({
+  build({
     entryPoints: ["server/index.ts"],
-    platform: "node",
+    outfile: "dist/server/index.js",
     bundle: true,
-    format: "cjs",
-    outfile: "dist/index.cjs",
+    platform: "node",
+    target: "node18",
     define: {
       "process.env.NODE_ENV": '"production"',
     },

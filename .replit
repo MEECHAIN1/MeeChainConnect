@@ -1,10 +1,13 @@
 modules = ["nodejs-20", "web", "postgresql-16"]
-run ="npm run dev"
+run = "NODE_OPTIONS='--max-old-space-size=4096' npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["psmisc"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [env]
 PORT = "5000"
@@ -12,7 +15,7 @@ PORT = "5000"
 [deployment]
 deploymentTarget = "autoscale"
 run = ["sh", "-c", "npm run preview"]
-build = ["sh", "-c", "npm run build"]
+build = ["npm", "run", "build"]
 
 [workflows]
 runButton = "Project"
@@ -48,15 +51,6 @@ author = 47083224
 task = "shell.exec"
 args = "npm run dev"
 
-[[workflows.workflow]]
-name = " build"
-mode = "sequential"
-author = 46735076
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = " npm run build"
-
 [userenv]
 
 [userenv.shared]
@@ -67,8 +61,5 @@ VITE_MCB_TOKEN_ADDRESS='0x82a03a59f55d01c60035dbaef84abc2bcd02560b'
 VITE_WEB3AUTH_JWKS_ENDPOINT = "https://api-auth.web3auth.io/.well-known/jwks.json"
 VITE_WEB3AUTH_CLIENT_ID = "BDoEZ3QXE314y8jyZl9QYB9gwZX6b6LkNvU3li8GSYf17B-dlMGn3WBlrRj_dqIAI_0-GZBs7YJmMlUnwPs0XfI"
 RITUAL_CHAIN_ID = "0x344e"
-
-[[ports]]
-localPort = 5173
-externalPort = 80
+RPC_URL = "https://ritual-chain--praphaprawanta.replit.app:3002"
 

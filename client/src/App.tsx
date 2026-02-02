@@ -14,7 +14,7 @@ import MiningPage from "@/pages/MiningPage";
 import DashboardPage from "@/pages/DashboardPage";
 import OnboardingHUD from "@/components/OnboardingHUD";
 import NotFound from "@/pages/not-found";
-import { Layout } from "@/components/Layout";
+import { Layout } from "@/components/Layout"; // หรือ Sidebar ของคุณ
 
 function Router() {
   return (
@@ -25,6 +25,7 @@ function Router() {
           <Layout>
             <div className="min-h-screen bg-[#0a0a0c] text-white">
               <Switch>
+                 {/* ใส่ Route ของคุณตรงนี้ */}
                 <Route path="/" component={Home} />
                 <Route path="/marketplace" component={Marketplace} />
                 <Route path="/staking" component={Staking} />
