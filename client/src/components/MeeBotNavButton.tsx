@@ -1,14 +1,65 @@
-import React from "react";
-import { useEnhancedWallet } from "@/hooks/useEnhancedWallet"; // ดึง Hook ตัวเก่งของเรามาใช้
+import React, { useState, useEffect } from "react";
+import { web3auth } from "@/lib/web3auth";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Loader2, LogOut, Wallet, User } from "lucide-react";
+import { Loader2, LogOut, Wallet } from "lucide-react";
+import { useLocation } from "wouter";
 
 export function MeeBotNavButton() {
-  // ดึง Client ID จาก .env (ต้องตรงกับที่ใช้ใน Home)
-  const clientId = import.meta.env.VITE_WEB3AUTH_CLIENT_ID;
-  const { isConnected, login, logout, userEmail, isLoading, activeWallet } = useEnhancedWallet(clientId);
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
+  const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState<any>(null);
 
-  if (isLoading) {
+  useEffect(() => {
+    const init = async () => {
+      try {
+        if (web3auth.status === "not_ready") {
+          await web3auth.init();
+        }
+        if (web3auth.connected) {
+          const user = await web3auth.getUserInfo();
+          setUserInfo(user);
+        }
+      } catch (error) {
+        console.error("Web3Auth Init Error:", error);
+      }
+    };
+    init();
+  }, []);
+
+  const login = async () => {
+    try {
+      setLoading(true);
+      if (!web3auth.connected) {
+        await web3auth.connect();
+      }
+      const user = await web3auth.getUserInfo();
+      setUserInfo(user);
+      toast({
+        title: "Welcome!",
+        description: `สวัสดีคุณ ${user.name || "User"}`,
+      });
+      setLocation("/dashboard");
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Login Failed", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await web3auth.logout();
+      setUserInfo(null);
+      setLocation("/");
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  };
+
+  if (loading) {
     return (
       <Button variant="ghost" size="sm" className="bg-white/5 text-white">
         <Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading...
@@ -16,8 +67,7 @@ export function MeeBotNavButton() {
     );
   }
 
-  // 1. ถ้ายังไม่ล็อกอิน -> โชว์ปุ่ม Login
-  if (!isConnected) {
+  if (!userInfo) {
     return (
       <Button 
         onClick={login} 
@@ -28,7 +78,6 @@ export function MeeBotNavButton() {
     );
   }
 
-  // 2. ถ้าล็อกอินแล้ว -> โชว์ชื่อ + ปุ่ม Logout
   return (
     <div className="flex items-center gap-3 bg-white/5 p-1 pr-2 rounded-full border border-white/10 backdrop-blur-md">
       <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 rounded-full">
@@ -36,7 +85,7 @@ export function MeeBotNavButton() {
         <div className="flex flex-col text-right">
            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Smart Wallet</span>
            <span className="text-xs font-bold text-white max-w-[100px] truncate">
-             {userEmail || activeWallet?.address.slice(0, 6) + "..."}
+             {userInfo.name || "User"}
            </span>
         </div>
       </div>
