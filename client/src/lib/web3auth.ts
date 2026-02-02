@@ -23,11 +23,4 @@ export const web3auth = new Web3Auth({
   clientId,
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET, 
   privateKeyProvider: privateKeyProvider as any,
-  uiConfig: {
-    appName: "MeeChain Portal",
-    mode: "dark",
-    theme: {
-      primary: "#3b82f6",
-    },
-  },
 });
