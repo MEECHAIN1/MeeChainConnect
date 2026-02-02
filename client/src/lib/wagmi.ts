@@ -2,7 +2,6 @@ import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { defineChain } from "viem";
 import { mainnet } from "wagmi/chains";
 
-// กำหนดค่า Oasis Sapphire Chain
 export const meechain = defineChain({
   id: 23294,
   name: 'Oasis Sapphire',
@@ -17,10 +16,9 @@ export const meechain = defineChain({
   },
 });
 
-// ตั้งค่า RainbowKit Config
 export const config = getDefaultConfig({
   appName: "MeeChain App",
-  projectId: "b0d81328f8ab0541fdede7db9ff25cb1", // Project ID เดิมของคุณ
+  projectId: "b0d81328f8ab0541fdede7db9ff25cb1",
   chains: [meechain, mainnet],
   ssr: false, // ปิด SSR เพราะเราทำ SPA (Single Page App) บน Replit
 });
