@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
+import { MeeBotNavButton } from "./MeeBotNavButton";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -58,10 +59,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Actions */}
           <div className="hidden md:flex items-center gap-4">
+            <MeeBotNavButton />
           </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-4">
+            <MeeBotNavButton />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
