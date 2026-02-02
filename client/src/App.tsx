@@ -14,7 +14,7 @@ import MiningPage from "@/pages/MiningPage";
 import DashboardPage from "@/pages/DashboardPage";
 import OnboardingHUD from "@/components/OnboardingHUD";
 import NotFound from "@/pages/not-found";
-import { Layout } from "@/components/Layout"; // หรือ Sidebar ของคุณ
+import { Layout } from "@/components/Layout";
 
 function Router() {
   return (

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import { ethers } from 'ethers';
 import { useEnhancedWallet } from '../hooks/useEnhancedWallet';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
