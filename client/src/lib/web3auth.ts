@@ -22,7 +22,7 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
 export const web3auth = new Web3Auth({
   clientId,
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET, 
-  privateKeyProvider: privateKeyProvider as any,
+ privateKeyProvider: privateKeyProvider as any,
   uiConfig: {
     appName: "MeeChain Portal",
     mode: "dark",

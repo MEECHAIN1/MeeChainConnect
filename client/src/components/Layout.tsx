@@ -1,5 +1,4 @@
 import { Link, useLocation } from "wouter";
-import { ConnectWallet } from "./ConnectWallet";
 import { AiAssistant } from "./AiAssistant";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
@@ -59,12 +58,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <ConnectWallet />
           </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-4">
-            <ConnectWallet />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
