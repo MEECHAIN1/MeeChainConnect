@@ -25,7 +25,6 @@ function Router() {
           <Layout>
             <div className="min-h-screen bg-[#0a0a0c] text-white">
               <Switch>
-                 {/* ใส่ Route ของคุณตรงนี้ */}
                 <Route path="/" component={Home} />
                 <Route path="/marketplace" component={Marketplace} />
                 <Route path="/staking" component={Staking} />

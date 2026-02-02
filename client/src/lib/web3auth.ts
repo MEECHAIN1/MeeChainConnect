@@ -22,10 +22,9 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
   config: { chainConfig } 
 });
 
-// สร้าง Instance หลัก
-export const web3auth = new Web3Auth({
+// @ts-ignore - Web3Auth typing issue with privateKeyProvider
+const web3authOptions: any = {
   clientId,
-  // ⚠️ จุดสำคัญ: ต้องตรงกับ Environment ใน Dashboard ของคุณ
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET, 
   privateKeyProvider,
   uiConfig: {
@@ -36,4 +35,7 @@ export const web3auth = new Web3Auth({
     },
     loginMethodsOrder: ["google", "facebook", "twitter", "discord"],
   },
-});
+};
+
+// สร้าง Instance หลัก
+export const web3auth = new Web3Auth(web3authOptions);
