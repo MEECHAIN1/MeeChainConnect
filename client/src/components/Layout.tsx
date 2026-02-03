@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
 import { MeeBotNavButton } from "@/components/MeeBotNavButton";
-import WalletProvider from "@/lib/wallet/WalletProvider";
+import { WalletProvider, useWalletContext } from "@/lib/wallet/WalletProvider";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
