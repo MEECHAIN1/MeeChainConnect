@@ -6,7 +6,7 @@ import { mainnet } from "wagmi/chains";
 export const meechain = defineChain({
   id: 23294,
   name: 'Oasis Sapphire',
-  network: 'sapphire',
+  network: 'sapphire mainnet ',
   nativeCurrency: { name: 'ROSE', symbol: 'ROSE', decimals: 18 },
   rpcUrls: {
     default: { http: ['https://sapphire.oasis.io'] },

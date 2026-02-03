@@ -5,7 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
-import { MeeBotNavButton } from "./MeeBotNavButton";
+import { MeeBotNavButton } from "@/components/MeeBotNavButton";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
