@@ -24,3 +24,5 @@ export const useWalletContext = () => {
   }
   return context;
 };
+
+export default WalletProvider;

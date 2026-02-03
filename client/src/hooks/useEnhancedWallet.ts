@@ -7,7 +7,7 @@ import { RPC } from "@/lib/wallet/rpc";
 // 1. ตั้งค่า Oasis Sapphire
 const SAPPHIRE_CONFIG = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
-  chainId: "0x5afe", // Correct hex for 23294
+  chainId: "0x5afe", // Correct chain ID for Sapphire Mainnet
   rpcTarget: "https://sapphire.oasis.io",
   displayName: "Oasis Sapphire Mainnet",
   blockExplorerUrl: "https://explorer.oasis.io/mainnet/sapphire",
