@@ -1,116 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { web3auth } from "@/lib/web3auth";
+import React, { useEffect } from "react";
+import useWalletContext from "@/lib/wallet/WalletProvider";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Wallet } from "lucide-react";
 import { useLocation } from "wouter";
 
-const LoginWithMeeBot: React.FC = () => {
-  const { toast } = useToast();
+const LoginWithMeeBot = () => {
+  // ดึงคำสั่ง login และสถานะมาจาก WalletProvider โดยตรง
+  const { login, isLoading, isConnected, error } = useWalletContext();
   const [, setLocation] = useLocation();
-  const [loading, setLoading] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null);
+  const { toast } = useToast();
 
+  // ถ้าเชื่อมต่อสำเร็จ ให้พาไปหน้า Dashboard
   useEffect(() => {
-    const init = async () => {
-      try {
-        console.log("Web3Auth Status:", web3auth.status);
-        if (web3auth.status === "not_ready") {
-          await web3auth.init();
-        }
-        
-        if (web3auth.connected) {
-          const user = await web3auth.getUserInfo();
-          setUserInfo(user);
-        }
-      } catch (error) {
-        console.error("Web3Auth Init Error:", error);
-      }
-    };
-    init();
-  }, []);
-
-  const login = async () => {
-    if (!web3auth) {
-      toast({ title: "Error", description: "Web3Auth not initialized yet", variant: "destructive" });
-      return;
-    }
-    try {
-      setLoading(true);
-      
-      if (!web3auth.connected) {
-        await web3auth.connect();
-      }
-
-      const user = await web3auth.getUserInfo();
-      setUserInfo(user);
-
+    if (isConnected) {
       toast({
-        title: "Welcome to MeeChain!",
-        description: `สวัสดีคุณ ${user.name || "User"} การเข้าสู่ระบบสำเร็จ!`,
+        title: "Welcome back!",
+        description: "Connected to MeeBot Wallet successfully",
+        className: "bg-green-500 text-white border-none",
       });
-      
-      // Redirect to dashboard after successful login
       setLocation("/dashboard");
-    } catch (error) {
-      console.error(error);
-      toast({ title: "Login Failed", description: "การเข้าสู่ระบบถูกยกเลิก", variant: "destructive" });
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [isConnected, setLocation, toast]);
 
-  const logout = async () => {
-    try {
-      await web3auth.logout();
-      setUserInfo(null);
-      toast({ title: "Logged Out", description: "ออกจากระบบเรียบร้อยแล้ว" });
-      setLocation("/");
-    } catch (error) {
-      console.error("Logout Error:", error);
+  // ถ้ามี Error จากสมองกลาง ให้แจ้งเตือน
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Connection Failed",
+        description: error,
+      });
     }
-  };
-
-  if (userInfo) {
-    return (
-      <div className="flex items-center gap-4 bg-gray-300/50 p-2 pr-6 rounded-full border border-green-300/30 backdrop-blur-md">
-        <img 
-          src={userInfo.profileImage || "https://github.com/shadcn.png"} 
-          alt="Profile" 
-          className="w-10 h-10 rounded-full border-2 border-green-500"
-        />
-        <div className="text-left">
-          <p className="text-xs text-gray-400 font-bold">LOGGED IN AS</p>
-          <p className="text-sm text-white font-bold">{userInfo.name}</p>
-        </div>
-        <button 
-          onClick={logout}
-          className="ml-2 text-xs text-red-200 hover:text-red-300 underline"
-        >
-          Sign Out
-        </button>
-      </div>
-    );
-  }
+  }, [error, toast]);
 
   return (
     <button
-      onClick={login}
-      disabled={loading}
-      data-testid="button-login-meebot"
-      className="group relative px-8 py-4 bg-white text-black rounded-2xl font-black text-lg transition-all transform hover:scale-100 hover:shadow-[0_0_10px_rgba(255,255,255,0.3)] active:scale-50 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+      onClick={() => login()} // 👉 สั่งงานไปที่สมองกลาง
+      disabled={isLoading}
+      className="group relative flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 opacity-0 group-hover:opacity-16 transition-opacity" />
-      <div className="flex items-center gap-3 relative z-10">
-        {loading ? (
-          <Loader2 className="animate-spin" />
+      {/* เอฟเฟกต์แสงวิบวับพาดผ่าน */}
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+      {/* เนื้อหาในปุ่ม */}
+      <div className="relative flex items-center gap-3">
+        {isLoading ? (
+          <Loader2 className="w-5 h-5 animate-spin text-white" />
         ) : (
-          <img 
-            src="https://images.web3auth.io/web3auth-logo-w.svg" 
-            className="w-6 h-6 invert" 
-            alt="Web3Auth" 
-          />
+          <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
+             <Wallet size={18} className="text-white" />
+          </div>
         )}
-        <span>{loading ? "INITIALIZING..." : "LOGIN WITH MEEBOT ID"}</span>
+        
+        <div className="text-left flex flex-col">
+          <span className="text-[10px] text-blue-200 uppercase tracking-wider font-bold leading-tight">
+            Powered by Web3Auth
+          </span>
+          <span className="text-sm font-bold leading-tight">
+            {isLoading ? "INITIALIZING..." : "Connect w/ MeeBot ID"}
+          </span>
+        </div>
       </div>
     </button>
   );

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useAccount } from "wagmi";
+import React, { useState, useEffect, useRef } from "react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Pickaxe, 
@@ -14,9 +13,11 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import XPBar from "@/components/XPBar";
 import LevelUpModal from "@/components/LevelUpModal";
+import { useWalletContext } from "@/lib/wallet/WalletProvider"; 
 
 const MiningPage: React.FC = () => {
-  const { address, isConnected } = useAccount();
+  const { activeWallet, isConnected } = useWalletContext();
+  const address = activeWallet?.address;
   const { toast } = useToast();
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState<number | null>(null);
@@ -24,8 +25,8 @@ const MiningPage: React.FC = () => {
   const [localEnergy, setLocalEnergy] = useState(100);
   const [localTokens, setLocalTokens] = useState(0);
   const [sessionEarned, setSessionEarned] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
+  const timerRef = useRef<any>(null);
+  
   const { data: profile, isLoading } = useQuery<any>({
     queryKey: ["/api/profiles", address],
     enabled: !!isConnected,

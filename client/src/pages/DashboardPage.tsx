@@ -36,7 +36,6 @@ const miningHistory = [
 ];
 
 export default function DashboardPage() {
-  // ✅ ดึง login function มาใช้ด้วยครับ
   const { isConnected, wallets, activeWallet, login } = useWalletContext(); 
 
   const address = activeWallet?.address;

@@ -9,9 +9,8 @@ import {
   CheckCircle2,
   Lock
 } from 'lucide-react';
-import { useAccount } from 'wagmi';
+import { WalletProvider } from "@/lib/wallet/WalletProvider";
 
-// ประเภทของ Badge
 type BadgeType = 'wallet' | 'smart_wallet' | 'tx' | 'gasless' | 'recovery';
 
 interface Badge {
@@ -24,7 +23,7 @@ interface Badge {
 }
 
 const OnboardingHUD: React.FC = () => {
-  const { isConnected } = useAccount();
+  const { isConnected } = useWalletContext();
   const [activeNotification, setActiveNotification] = useState<Badge | null>(null);
   const [rituals, setRituals] = useState<Badge[]>([
     { id: 'wallet', label: 'Wallet Connected', desc: 'Link to MeeChain established', icon: Wallet, unlocked: false, color: 'text-blue-400' },

@@ -36,6 +36,7 @@ export function useUpdateProfile() {
       }
       return api.profiles.update.responses[200].parse(await res.json());
     },
+    
     onSuccess: (data) => {
       queryClient.invalidateQueries({ 
         queryKey: [api.profiles.get.path, data.walletAddress] 
