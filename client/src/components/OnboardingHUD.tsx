@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   Lock
 } from 'lucide-react';
-import { WalletProvider } from "@/lib/wallet/WalletProvider";
+import { useWalletContext } from "@/lib/wallet/WalletProvider";
 
 type BadgeType = 'wallet' | 'smart_wallet' | 'tx' | 'gasless' | 'recovery';
 

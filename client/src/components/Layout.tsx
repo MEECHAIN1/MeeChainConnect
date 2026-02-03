@@ -65,7 +65,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-4">
-            <WalletProvider />
+            <WalletProvider>
+              <div />
+            </WalletProvider>
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">

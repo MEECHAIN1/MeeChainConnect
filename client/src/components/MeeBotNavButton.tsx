@@ -1,5 +1,5 @@
 import React from "react";
-import { WalletProvider } from "@/lib/wallet/WalletProvider";
+import { useWalletContext } from "@/lib/wallet/WalletProvider";
 import { Button } from "@/components/ui/button";
 import { Loader2, LogOut, Wallet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
