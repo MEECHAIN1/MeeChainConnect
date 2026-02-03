@@ -1,4 +1,4 @@
-import { users, profiles, wallets, type User, type InsertUser, type Profile, type InsertProfile, type Wallet, type InsertWallet } from "@shared/schema";
+import { users, profiles, type User, type InsertUser, type Profile, type InsertProfile } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -10,11 +10,6 @@ export interface IStorage {
   getProfile(walletAddress: string): Promise<Profile | undefined>;
   createProfile(profile: InsertProfile): Promise<Profile>;
   updateProfile(walletAddress: string, profile: Partial<InsertProfile>): Promise<Profile>;
-  syncMining(walletAddress: string, data: { energy: number; tokens: string }): Promise<Profile>;
-  updateMiningStats(walletAddress: string, energy: number, tokens: string): Promise<Profile>;
-
-  getWallet(id: string): Promise<Wallet | undefined>;
-  createWallet(wallet: InsertWallet): Promise<Wallet>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -57,39 +52,6 @@ export class DatabaseStorage implements IStorage {
       .where(eq(profiles.walletAddress, walletAddress))
       .returning();
     return profile;
-  }
-
-  async syncMining(walletAddress: string, data: { energy: number; tokens: string }): Promise<Profile> {
-    return this.updateMiningStats(walletAddress, data.energy, data.tokens);
-  }
-
-  async updateMiningStats(walletAddress: string, energy: number, tokens: string): Promise<Profile> {
-    const existing = await this.getProfile(walletAddress);
-    if (!existing) {
-      return this.createProfile({ walletAddress, energy, tokens });
-    }
-
-    const [profile] = await db.update(profiles)
-      .set({
-        energy,
-        tokens,
-      })
-      .where(eq(profiles.walletAddress, walletAddress))
-      .returning();
-    return profile;
-  }
-
-  async getWallet(id: string): Promise<Wallet | undefined> {
-    const [wallet] = await db.select().from(wallets).where(eq(wallets.id, id));
-    return wallet;
-  }
-
-  async createWallet(insertWallet: InsertWallet): Promise<Wallet> {
-    const [wallet] = await db.insert(wallets).values(insertWallet).onConflictDoUpdate({
-      target: wallets.id,
-      set: insertWallet
-    }).returning();
-    return wallet;
   }
 }
 

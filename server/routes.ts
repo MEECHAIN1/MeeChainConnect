@@ -37,33 +37,5 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/wallets", async (req, res) => {
-    try {
-      const walletData = req.body;
-      const newWallet = await storage.createWallet({
-        id: walletData.id,
-        address: walletData.address,
-        name: walletData.name,
-        type: walletData.type,
-        ownerAddress: walletData.ownerId,
-        isDeployed: walletData.isDeployed,
-        balanceNative: String(walletData.balance?.native || "0")
-      });
-      res.json(newWallet);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to sync wallet" });
-    }
-  });
-
-  app.post("/api/mining/sync", async (req, res) => {
-    try {
-      const { walletAddress, energy, tokens } = req.body;
-      const updated = await storage.updateMiningStats(walletAddress, energy, tokens);
-      res.json(updated);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to sync mining stats" });
-    }
-  });
-
   return httpServer;
 }

@@ -88,8 +88,7 @@ export function AiAssistant() {
                     </div>
                   </div>
                 )}
-                {/* Fixed the runtime error by ensuring the ref is attached to a stable element */}
-                <div ref={scrollRef} className="h-0 w-0" />
+                <div ref={scrollRef} />
               </div>
             </ScrollArea>
 

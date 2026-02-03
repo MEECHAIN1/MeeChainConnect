@@ -1,18 +1,15 @@
 import { Link, useLocation } from "wouter";
+import { ConnectWallet } from "./ConnectWallet";
 import { AiAssistant } from "./AiAssistant";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
-import { MeeBotNavButton } from "@/components/MeeBotNavButton";
-import { WalletProvider, useWalletContext } from "@/lib/wallet/WalletProvider";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
-  { label: "Dashboard", href: "/dashboard" },
   { label: "Marketplace", href: "/marketplace" },
-  { label: "Mining", href: "/mining" },
   { label: "Staking", href: "/staking" },
   { label: "Profile", href: "/profile" },
 ];
@@ -60,14 +57,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <MeeBotNavButton />
+            <ConnectWallet />
           </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-4">
-            <WalletProvider>
-              <div />
-            </WalletProvider>
+            <ConnectWallet />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
