@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK, IProvider } from "@web3auth/base";
+import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { RPC } from "@/lib/wallet/rpc";
 
 // 1. ตั้งค่า Oasis Sapphire
@@ -44,20 +45,17 @@ export const useEnhancedWallet = (clientId: string): UseEnhancedWalletReturn => 
       try {
         setIsLoading(true);
 
-        // ✅ แก้ไข: ส่ง chainConfig เข้าไปตรงๆ (ไม่ต้องสร้าง privateKeyProvider เอง)
+        const privateKeyProvider = new EthereumPrivateKeyProvider({
+          config: { chainConfig: SAPPHIRE_CONFIG },
+        });
+
         const web3authInstance = new Web3Auth({
           clientId, 
           web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-          chainConfig: SAPPHIRE_CONFIG,
+          privateKeyProvider,
         });
 
-        // Add UI configuration separately for the modal
-        await web3authInstance.initModal({
-          config: {
-            loginMethodsOrder: ["google", "facebook", "twitter"],
-            theme: "dark",
-          }
-        });
+        await web3authInstance.init();
         setWeb3auth(web3authInstance);
 
         if (web3authInstance.connected) {
