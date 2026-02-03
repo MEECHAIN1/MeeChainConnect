@@ -48,14 +48,16 @@ export const useEnhancedWallet = (clientId: string): UseEnhancedWalletReturn => 
         const web3authInstance = new Web3Auth({
           clientId, 
           web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-          chainConfig: SAPPHIRE_CONFIG, // ใส่ Config ตรงนี้เลย ปลอดภัยกว่า
-          uiConfig: {
-          theme: "dark",
-          loginMethodsOrder: ["google", "facebook", "twitter"],
-          }
+          chainConfig: SAPPHIRE_CONFIG,
         });
 
-        await web3authInstance.initModal();
+        // Add UI configuration separately for the modal
+        await web3authInstance.initModal({
+          config: {
+            loginMethodsOrder: ["google", "facebook", "twitter"],
+            theme: "dark",
+          }
+        });
         setWeb3auth(web3authInstance);
 
         if (web3authInstance.connected) {
