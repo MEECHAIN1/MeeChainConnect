@@ -4,13 +4,16 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Loader2, LogOut, Wallet } from "lucide-react";
 import { useLocation } from "wouter";
+import { useWalletContext } from "@/lib/wallet/WalletProvider";
 
 export function MeeBotNavButton() {
+  const { isConnected, wallets, activeWallet } = useWalletContext();
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
+  const [setLocation] = useLocation();
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
 
+  
   useEffect(() => {
     const init = async () => {
       try {

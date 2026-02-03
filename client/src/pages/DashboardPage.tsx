@@ -1,6 +1,5 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useAccount } from "wagmi";
 import { 
   Wallet, 
   Zap, 
@@ -9,7 +8,8 @@ import {
   ArrowUpRight, 
   Cpu,
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  Power // เพิ่มไอคอนปุ่ม Login
 } from "lucide-react";
 import { 
   AreaChart, 
@@ -20,10 +20,11 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from "recharts";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import XPBar from "@/components/XPBar";
+import { useWalletContext } from "@/lib/wallet/WalletProvider";
+import { Button } from "@/components/ui/button";
 
-// จำลองข้อมูลกราฟการขุด (ในอนาคตดึงจาก API)
+// จำลองข้อมูลกราฟการขุด
 const miningHistory = [
   { time: "00:00", hash: 30 },
   { time: "04:00", hash: 45 },
@@ -34,31 +35,54 @@ const miningHistory = [
   { time: "23:59", hash: 58 },
 ];
 
-const DashboardPage: React.FC = () => {
-  const { address, isConnected } = useAccount();
+export default function DashboardPage() {
+  // ✅ ดึง login function มาใช้ด้วยครับ
+  const { isConnected, wallets, activeWallet, login } = useWalletContext(); 
 
-  // ดึงข้อมูล Profile จาก Backend ที่เราเขียนไว้ใน routes.ts
+  const address = activeWallet?.address;
+
+  // ดึงข้อมูล Profile
   const { data: profile, isLoading } = useQuery<any>({
     queryKey: ["/api/profiles", address],
-    enabled: !!isConnected,
+    enabled: !!isConnected && !!address,
   });
 
   return (
     <div className="p-6 space-y-8 animate-in fade-in duration-700">
-      
+
       {/* Header & Connect Wallet */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-4xl font-black text-white tracking-tight">System Dashboard</h1>
           <p className="text-gray-400">ยินดีต้อนรับกลับเข้าสู่ MeeBotV2 Terminal</p>
         </div>
-        <ConnectButton />
+
+        {/* ✅ ปุ่ม Connect ที่เรียกใช้ MeeBot (Google Login) */}
+        {!isConnected && (
+          <Button 
+            onClick={() => login()} 
+            className="bg-blue-600 hover:bg-blue-500 text-white gap-2 font-bold shadow-lg shadow-blue-500/20"
+          >
+            <Power size={18} />
+            Initialize System
+          </Button>
+        )}
       </header>
 
       {!isConnected ? (
         <div className="flex flex-col items-center justify-center py-20 bg-gray-900/30 border border-dashed border-gray-800 rounded-3xl">
-          <Wallet className="w-16 h-16 text-gray-700 mb-4" />
-          <h2 className="text-xl font-bold text-gray-500">โปรดเชื่อมต่อ Wallet เพื่อดูข้อมูลระบบ</h2>
+          <div className="bg-gray-800/50 p-4 rounded-full mb-4">
+            <Wallet className="w-12 h-12 text-gray-500" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-400">System Offline</h2>
+          <p className="text-gray-600 mt-2">โปรดกดปุ่ม Initialize System เพื่อเชื่อมต่อ</p>
+          <Button 
+            onClick={() => login()} 
+            variant="outline" 
+            className="mt-6 border-blue-500/30 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+          >
+            Connect Wallet
+          </Button>
         </div>
       ) : (
         <>
@@ -69,7 +93,7 @@ const DashboardPage: React.FC = () => {
               <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-110 transition-transform">
                 <Coins size={48} />
               </div>
-              <p className="text-blue-400 text-sm font-bold uppercase tracking-widest">MEE Balance</p>
+              <p className="text-blue-400 text-sm font-bold uppercase tracking-widest">MCB Balance</p>
               <h2 className="text-3xl font-black text-white mt-2">
                 {isLoading ? "..." : parseFloat(profile?.tokens || "0").toLocaleString()}
               </h2>
@@ -101,14 +125,16 @@ const DashboardPage: React.FC = () => {
                   <div className="bg-green-500/10 p-2 rounded-lg">
                     <ShieldCheck className="text-green-400" size={20} />
                   </div>
-                  <div>
+                  <div className="overflow-hidden">
                     <h3 className="text-white font-bold text-sm">Verified Persona</h3>
-                    <p className="text-[10px] text-gray-500 font-mono">ID: {profile?.username || 'GUEST'}</p>
+                    <p className="text-[10px] text-gray-500 font-mono truncate w-full" title={address}>
+                        {address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : 'UNKNOWN'}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* ✅ ใส่ XP Bar ตรงนี้ครับ */}
+              {/* XP Bar Component */}
               <XPBar xp={profile?.xp || 0} level={profile?.level || 1} />
             </div>
 
@@ -195,6 +221,4 @@ const DashboardPage: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default DashboardPage;
+}

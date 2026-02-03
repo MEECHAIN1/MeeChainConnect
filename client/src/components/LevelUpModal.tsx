@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Crown, Zap, X } from "lucide-react";
-import Confetti from "react-confetti"; // ถ้าอยากได้พลุกระดาษ (option) หรือใช้ CSS particle ก็ได้
+import Confetti from "react-confetti";
 
 interface LevelUpModalProps {
   isOpen: boolean;
